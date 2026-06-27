@@ -174,3 +174,16 @@ C:\drive\ecm\Health_recommendation\HealthAgent.Api\obj\Debug\net8.0\rjsmcshtml.d
 C:\drive\ecm\Health_recommendation\HealthAgent.Api\obj\Debug\net8.0\staticwebassets.build.json.cache
 C:\drive\ecm\Health_recommendation\HealthAgent.Api\obj\Debug\net8.0\staticwebassets.build.endpoints.json
 C:\drive\ecm\Health_recommendation\HealthAgent.Api\obj\Debug\net8.0\swae.build.ex.cache
+C:\drive\ecm\Health_recommendation\HealthAgent.Api\bin\Debug\net8.0\Agents\Prompts\chest-abdominal-pain-prompt.txt
+C:\drive\ecm\Health_recommendation\HealthAgent.Api\bin\Debug\net8.0\Agents\Prompts\chronic-acute-pain-prompt.txt
+C:\drive\ecm\Health_recommendation\HealthAgent.Api\bin\Debug\net8.0\Agents\Prompts\conversation-summary-prompt.txt
+C:\drive\ecm\Health_recommendation\HealthAgent.Api\bin\Debug\net8.0\Agents\Prompts\disclaimer-generation-prompt.txt
+C:\drive\ecm\Health_recommendation\HealthAgent.Api\bin\Debug\net8.0\Agents\Prompts\emergency-triage-prompt.txt
+C:\drive\ecm\Health_recommendation\HealthAgent.Api\bin\Debug\net8.0\Agents\Prompts\follow-up-questions-prompt.txt
+C:\drive\ecm\Health_recommendation\HealthAgent.Api\bin\Debug\net8.0\Agents\Prompts\head-pain-prompt.txt
+C:\drive\ecm\Health_recommendation\HealthAgent.Api\bin\Debug\net8.0\Agents\Prompts\lifestyle-recommendation-prompt.txt
+C:\drive\ecm\Health_recommendation\HealthAgent.Api\bin\Debug\net8.0\Agents\Prompts\medication-safety-prompt.txt
+C:\drive\ecm\Health_recommendation\HealthAgent.Api\bin\Debug\net8.0\Agents\Prompts\musculoskeletal-pain-prompt.txt
+C:\drive\ecm\Health_recommendation\HealthAgent.Api\bin\Debug\net8.0\Agents\Prompts\neuropathic-pain-prompt.txt
+C:\drive\ecm\Health_recommendation\HealthAgent.Api\bin\Debug\net8.0\Agents\Prompts\sentiment-analysis-prompt.txt
+C:\drive\ecm\Health_recommendation\HealthAgent.Api\obj\Debug\net8.0\HealthAgent.Api.sourcelink.json

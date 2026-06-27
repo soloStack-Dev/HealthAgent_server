@@ -155,6 +155,28 @@ dotnet run
 
 ---
 
+## Docker
+
+A production-ready `Dockerfile` is located at `HealthAgent.Api/Dockerfile`. It uses a multi-stage build:
+
+1. **Build stage** — restores dependencies and publishes a release build using `mcr.microsoft.com/dotnet/sdk:8.0`
+2. **Runtime stage** — runs the published output on `mcr.microsoft.com/dotnet/aspnet:8.0`
+
+### Build & Run
+
+```bash
+docker build -t health-agent-api -f HealthAgent.Api/Dockerfile .
+
+docker run -d -p 8080:8080 \
+  -e ConnectionStrings__DefaultConnection="Server=host.docker.internal,1433;Database=HealthAgentDb;User=sa;Password=YourPassword;TrustServerCertificate=True" \
+  -e Ollama__Endpoint="http://host.docker.internal:11434" \
+  health-agent-api
+```
+
+> **Note:** Point `Ollama__Endpoint` to a host-accessible Ollama instance (e.g. `host.docker.internal` on Docker Desktop or the Ollama container's network alias). Configure the database connection string to reach your SQL Server instance.
+
+---
+
 ## Safety & Ethics
 
 This system implements strict safety guardrails:
