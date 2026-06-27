@@ -21,7 +21,7 @@ public class MessageConfiguration : IEntityTypeConfiguration<Message>
             .HasMaxLength(50);
 
         builder.Property(m => m.CreatedAt)
-            .HasDefaultValueSql("GETUTCDATE()");
+            .HasDefaultValue(DateTime.UtcNow);
 
         builder.HasOne(m => m.Conversation)
             .WithMany(c => c.Messages)

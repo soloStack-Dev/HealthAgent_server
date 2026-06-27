@@ -18,10 +18,10 @@ public class ConversationConfiguration : IEntityTypeConfiguration<Conversation>
             .HasDefaultValue("Low");
 
         builder.Property(c => c.CreatedAt)
-            .HasDefaultValueSql("GETUTCDATE()");
+            .HasDefaultValue(DateTime.UtcNow);
 
         builder.Property(c => c.UpdatedAt)
-            .HasDefaultValueSql("GETUTCDATE()");
+            .HasDefaultValue(DateTime.UtcNow);
 
         builder.HasOne(c => c.User)
             .WithMany(u => u.Conversations)

@@ -28,10 +28,10 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .HasMaxLength(20);
 
         builder.Property(u => u.CreatedAt)
-            .HasDefaultValueSql("GETUTCDATE()");
+            .HasDefaultValue(DateTime.UtcNow);
 
         builder.Property(u => u.UpdatedAt)
-            .HasDefaultValueSql("GETUTCDATE()");
+            .HasDefaultValue(DateTime.UtcNow);
 
         builder.Property(u => u.IsActive)
             .HasDefaultValue(true);
