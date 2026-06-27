@@ -1,6 +1,6 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
-COPY ["HealthAgent.Api.csproj", "."]
+COPY HealthAgent.Api.csproj .
 RUN dotnet restore
 COPY . .
 RUN dotnet publish -c Release -o /app
