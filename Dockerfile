@@ -11,4 +11,6 @@ COPY --from=build /app .
 EXPOSE 8080
 EXPOSE 8081
 ENV ASPNETCORE_URLS=http://+:8080
+ENV DatabaseProvider=Sqlite
+ENV ConnectionStrings__SqliteConnection="Data Source=HealthAgent.db"
 ENTRYPOINT ["dotnet", "HealthAgent.Api.dll"]

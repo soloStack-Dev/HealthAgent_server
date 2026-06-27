@@ -38,13 +38,22 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(
-        builder.Configuration.GetConnectionString("DefaultConnection"),
-        sqlOptions => sqlOptions
-            .EnableRetryOnFailure(3)
-            .MigrationsAssembly("HealthAgent.Api")
-    ));
+var dbProvider = builder.Configuration.GetValue<string>("DatabaseProvider") ?? "SqlServer";
+if (dbProvider == "Sqlite")
+{
+    builder.Services.AddDbContext<ApplicationDbContext>(options =>
+        options.UseSqlite(builder.Configuration.GetConnectionString("SqliteConnection")));
+}
+else
+{
+    builder.Services.AddDbContext<ApplicationDbContext>(options =>
+        options.UseSqlServer(
+            builder.Configuration.GetConnectionString("DefaultConnection"),
+            sqlOptions => sqlOptions
+                .EnableRetryOnFailure(3)
+                .MigrationsAssembly("HealthAgent.Api")
+        ));
+}
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
