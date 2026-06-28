@@ -99,14 +99,17 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowRender", policy =>
     {
-        policy.WithOrigins(
-                "http://localhost:5173",
-                "http://localhost:3000",
-                "https://health-agent-client.onrender.com",
-                "https://healthagent-server.onrender.com"
-              )
-              .AllowAnyHeader()
-              .AllowAnyMethod();
+        policy.SetIsOriginAllowed(origin =>
+        {
+            if (string.IsNullOrWhiteSpace(origin)) return false;
+            var uri = new Uri(origin);
+            return uri.IsLoopback
+                || uri.Host == "localhost"
+                || uri.Host.EndsWith(".onrender.com")
+                || uri.Host == "healthagent-server.onrender.com";
+        })
+        .AllowAnyHeader()
+        .AllowAnyMethod();
     });
 });
 
