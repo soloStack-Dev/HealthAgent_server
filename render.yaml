@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: healthagent-server
+    runtime: dotnet
+    repo: https://github.com/soloStack-Dev/HealthAgent_server.git
+    buildCommand: dotnet restore && dotnet publish -c Release -o out
+    startCommand: dotnet out/HealthAgent.Api.dll
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: DatabaseProvider
+        value: Sqlite
+      - key: ConnectionStrings__SqliteConnection
+        value: Data Source=HealthAgent.db
