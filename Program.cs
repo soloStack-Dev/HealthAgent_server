@@ -97,15 +97,16 @@ builder.Services.AddScoped<IWebSearchService, WebSearchService>();
 
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(policy =>
+    options.AddPolicy("AllowRender", policy =>
     {
         policy.WithOrigins(
-            "http://localhost:5173",
-            "https://health-agent-client.vercel.app"
-        )
-            .AllowAnyHeader()
-            .AllowAnyMethod()
-            .AllowCredentials();
+                "http://localhost:5173",
+                "http://localhost:3000",
+                "https://health-agent-client.onrender.com",
+                "https://healthagent-server.onrender.com"
+              )
+              .AllowAnyHeader()
+              .AllowAnyMethod();
     });
 });
 
@@ -117,7 +118,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors();
+app.UseCors("AllowRender");
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseMiddleware<RequestLoggingMiddleware>();
 if (app.Environment.IsDevelopment())
