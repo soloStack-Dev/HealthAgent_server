@@ -84,7 +84,10 @@ builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy.AllowAnyOrigin()
+        policy.WithOrigins(
+            "http://localhost:5173",
+            "https://health-agent-client.vercel.app"
+        )
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
@@ -98,7 +101,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors();
+app.UseCors("AllowVercelFrontend");
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseMiddleware<RequestLoggingMiddleware>();
 if (app.Environment.IsDevelopment())

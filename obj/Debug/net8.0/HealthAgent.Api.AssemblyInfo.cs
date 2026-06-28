@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("HealthAgent.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fca4a8848784c43f09e181a125da567d74ce8307")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e1e9dc2d6ce75b01dc7987ba212b222cbbfd5a6c")]
 [assembly: System.Reflection.AssemblyProductAttribute("HealthAgent.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("HealthAgent.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
