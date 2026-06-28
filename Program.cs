@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.Json;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -9,6 +10,7 @@ using MediAgent.Api.Infrastructure.Ollama;
 using MediAgent.Api.Infrastructure.WebSearch;
 using MediAgent.Api.Middleware;
 using MediAgent.Api.Services;
+using MediAgent.Api.Common;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -70,6 +72,19 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(jwtSettings["Key"] ?? "SuperSecretKeyForDevelopment123!"))
         };
+
+        options.Events = new JwtBearerEvents
+        {
+            OnChallenge = async context =>
+            {
+                context.HandleResponse();
+                context.Response.StatusCode = 401;
+                context.Response.ContentType = "application/json";
+                var response = ApiResponse<object>.Fail("Authentication required. Please sign in.");
+                var json = JsonSerializer.Serialize(response);
+                await context.Response.WriteAsync(json);
+            }
+        };
     });
 
 builder.Services.AddAuthorization();
@@ -89,7 +104,8 @@ builder.Services.AddCors(options =>
             "https://health-agent-client.vercel.app"
         )
             .AllowAnyHeader()
-            .AllowAnyMethod();
+            .AllowAnyMethod()
+            .AllowCredentials();
     });
 });
 
@@ -101,7 +117,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors("AllowVercelFrontend");
+app.UseCors();
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseMiddleware<RequestLoggingMiddleware>();
 if (app.Environment.IsDevelopment())
