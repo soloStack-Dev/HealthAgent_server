@@ -15,7 +15,7 @@ public class ConversationService : IConversationService
         _logger = logger;
     }
 
-    public async Task<List<ConversationSummary>> GetUserConversationsAsync(Guid userId)
+    public async Task<List<ConversationSummary>> GetUserConversationsAsync(string userId)
     {
         return await _dbContext.Conversations
             .Where(c => c.UserId == userId)
@@ -36,7 +36,7 @@ public class ConversationService : IConversationService
 //when user want to get the conversation detail
 //the server was response the conversation detail
 //one user have a many conversation
-    public async Task<ConversationDetail?> GetConversationAsync(Guid conversationId, Guid userId)
+    public async Task<ConversationDetail?> GetConversationAsync(Guid conversationId, string userId)
     {
         var conversation = await _dbContext.Conversations
             .Include(c => c.Messages.OrderBy(m => m.CreatedAt))
@@ -67,7 +67,7 @@ public class ConversationService : IConversationService
     //when user want to get the conversation detail
     //the server was response the conversation detail
     //one conversation have a many message
-    public async Task<bool> DeleteConversationAsync(Guid conversationId, Guid userId)
+    public async Task<bool> DeleteConversationAsync(Guid conversationId, string userId)
     {
         var conversation = await _dbContext.Conversations
             .FirstOrDefaultAsync(c => c.Id == conversationId && c.UserId == userId);
@@ -82,7 +82,7 @@ public class ConversationService : IConversationService
         //one conversation have a many message
     }
 
-    public async Task<string?> GenerateTitleAsync(Guid conversationId, Guid userId)
+    public async Task<string?> GenerateTitleAsync(Guid conversationId, string userId)
     {
         var conversation = await _dbContext.Conversations
             .Include(c => c.Messages)

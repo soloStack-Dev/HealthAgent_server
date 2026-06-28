@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using MediAgent.Api.Common;
 using MediAgent.Api.Services;
 
@@ -8,27 +7,25 @@ public static class ConversationEndpoints
 {
     public static void MapConversationEndpoints(this WebApplication app)
     {
-        var conversationGroup = app.MapGroup("/api/conversations").RequireAuthorization();
+        var conversationGroup = app.MapGroup("/api/conversations");
 
-        conversationGroup.MapGet("/", async (IConversationService conversationService, HttpContext httpContext) =>
+        conversationGroup.MapGet("/", async (string userId, IConversationService conversationService) =>
         {
-            var userId = GetUserId(httpContext);
-            if (userId == null)
-                return Results.Unauthorized();
+            if (string.IsNullOrWhiteSpace(userId))
+                return Results.BadRequest(ApiResponse<object>.Fail("UserId is required"));
 
-            var conversations = await conversationService.GetUserConversationsAsync(userId.Value);
+            var conversations = await conversationService.GetUserConversationsAsync(userId);
             return Results.Ok(ApiResponse<object>.Ok(conversations));
         })
         .WithName("ListConversations")
         .WithOpenApi();
 
-        conversationGroup.MapGet("/{id:guid}", async (Guid id, IConversationService conversationService, HttpContext httpContext) =>
+        conversationGroup.MapGet("/{id:guid}", async (Guid id, string userId, IConversationService conversationService) =>
         {
-            var userId = GetUserId(httpContext);
-            if (userId == null)
-                return Results.Unauthorized();
+            if (string.IsNullOrWhiteSpace(userId))
+                return Results.BadRequest(ApiResponse<object>.Fail("UserId is required"));
 
-            var conversation = await conversationService.GetConversationAsync(id, userId.Value);
+            var conversation = await conversationService.GetConversationAsync(id, userId);
             if (conversation == null)
                 return Results.NotFound(ApiResponse<object>.Fail("Conversation not found"));
 
@@ -37,13 +34,12 @@ public static class ConversationEndpoints
         .WithName("GetConversation")
         .WithOpenApi();
 
-        conversationGroup.MapDelete("/{id:guid}", async (Guid id, IConversationService conversationService, HttpContext httpContext) =>
+        conversationGroup.MapDelete("/{id:guid}", async (Guid id, string userId, IConversationService conversationService) =>
         {
-            var userId = GetUserId(httpContext);
-            if (userId == null)
-                return Results.Unauthorized();
+            if (string.IsNullOrWhiteSpace(userId))
+                return Results.BadRequest(ApiResponse<object>.Fail("UserId is required"));
 
-            var deleted = await conversationService.DeleteConversationAsync(id, userId.Value);
+            var deleted = await conversationService.DeleteConversationAsync(id, userId);
             if (!deleted)
                 return Results.NotFound(ApiResponse<object>.Fail("Conversation not found"));
 
@@ -52,13 +48,12 @@ public static class ConversationEndpoints
         .WithName("DeleteConversation")
         .WithOpenApi();
 
-        conversationGroup.MapPost("/{id:guid}/title", async (Guid id, IConversationService conversationService, HttpContext httpContext) =>
+        conversationGroup.MapPost("/{id:guid}/title", async (Guid id, string userId, IConversationService conversationService) =>
         {
-            var userId = GetUserId(httpContext);
-            if (userId == null)
-                return Results.Unauthorized();
+            if (string.IsNullOrWhiteSpace(userId))
+                return Results.BadRequest(ApiResponse<object>.Fail("UserId is required"));
 
-            var title = await conversationService.GenerateTitleAsync(id, userId.Value);
+            var title = await conversationService.GenerateTitleAsync(id, userId);
             if (title == null)
                 return Results.NotFound(ApiResponse<object>.Fail("Conversation not found"));
 
@@ -66,13 +61,5 @@ public static class ConversationEndpoints
         })
         .WithName("GenerateTitle")
         .WithOpenApi();
-    }
-
-    private static Guid? GetUserId(HttpContext httpContext)
-    {
-        var userIdClaim = httpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (Guid.TryParse(userIdClaim, out var userId))
-            return userId;
-        return null;
     }
 }

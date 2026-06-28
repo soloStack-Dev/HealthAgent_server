@@ -28,7 +28,7 @@ public class HealthAgentService : IHealthAgentService
         _logger = logger;
     }
 
-    public async Task<SymptomAnalysisResponse> AnalyzeSymptomsAsync(Guid userId, SymptomAnalysisRequest request)
+    public async Task<SymptomAnalysisResponse> AnalyzeSymptomsAsync(string userId, SymptomAnalysisRequest request)
     {
         var stopwatch = System.Diagnostics.Stopwatch.StartNew();
 
@@ -117,7 +117,7 @@ public class HealthAgentService : IHealthAgentService
         //analysis result was return to user the agent response what patient was needed
     }
 
-    private async Task<Conversation> GetOrCreateConversationAsync(Guid userId, SymptomAnalysisRequest request)
+    private async Task<Conversation> GetOrCreateConversationAsync(string userId, SymptomAnalysisRequest request)
     {
         if (request.ConversationId.HasValue)
         {

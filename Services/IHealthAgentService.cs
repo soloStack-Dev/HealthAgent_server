@@ -5,5 +5,5 @@ namespace MediAgent.Api.Services;
 
 public interface IHealthAgentService
 {
-    Task<SymptomAnalysisResponse> AnalyzeSymptomsAsync(Guid userId, SymptomAnalysisRequest request);
+    Task<SymptomAnalysisResponse> AnalyzeSymptomsAsync(string userId, SymptomAnalysisRequest request);
 }

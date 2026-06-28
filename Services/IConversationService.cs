@@ -4,10 +4,10 @@ namespace MediAgent.Api.Services;
 
 public interface IConversationService
 {
-    Task<List<ConversationSummary>> GetUserConversationsAsync(Guid userId);
-    Task<ConversationDetail?> GetConversationAsync(Guid conversationId, Guid userId);
-    Task<bool> DeleteConversationAsync(Guid conversationId, Guid userId);
-    Task<string?> GenerateTitleAsync(Guid conversationId, Guid userId);
+    Task<List<ConversationSummary>> GetUserConversationsAsync(string userId);
+    Task<ConversationDetail?> GetConversationAsync(Guid conversationId, string userId);
+    Task<bool> DeleteConversationAsync(Guid conversationId, string userId);
+    Task<string?> GenerateTitleAsync(Guid conversationId, string userId);
 }
 
 public class ConversationDetail

@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using MediAgent.Api.Common;
 using MediAgent.Api.Models.Requests;
 using MediAgent.Api.Services;
@@ -9,18 +8,16 @@ public static class HealthAgentEndpoints
 {
     public static void MapHealthAgentEndpoints(this WebApplication app)
     {
-        var healthGroup = app.MapGroup("/api/health").RequireAuthorization();
+        var healthGroup = app.MapGroup("/api/health");
 
         healthGroup.MapPost("/analyze", async (
             SymptomAnalysisRequest request,
-            IHealthAgentService healthAgentService,
-            HttpContext httpContext) =>
+            IHealthAgentService healthAgentService) =>
         {
-            var userId = GetUserId(httpContext);
-            if (userId == null)
-                return Results.Unauthorized();
+            if (string.IsNullOrWhiteSpace(request.UserId))
+                return Results.BadRequest(ApiResponse<object>.Fail("UserId is required"));
 
-            var result = await healthAgentService.AnalyzeSymptomsAsync(userId.Value, request);
+            var result = await healthAgentService.AnalyzeSymptomsAsync(request.UserId, request);
             return Results.Ok(ApiResponse<object>.Ok(result, "Symptom analysis completed"));
         })
         .WithName("AnalyzeSymptoms")
@@ -28,14 +25,12 @@ public static class HealthAgentEndpoints
 
         healthGroup.MapPost("/chat", async (
             SymptomAnalysisRequest request,
-            IHealthAgentService healthAgentService,
-            HttpContext httpContext) =>
+            IHealthAgentService healthAgentService) =>
         {
-            var userId = GetUserId(httpContext);
-            if (userId == null)
-                return Results.Unauthorized();
+            if (string.IsNullOrWhiteSpace(request.UserId))
+                return Results.BadRequest(ApiResponse<object>.Fail("UserId is required"));
 
-            var result = await healthAgentService.AnalyzeSymptomsAsync(userId.Value, request);
+            var result = await healthAgentService.AnalyzeSymptomsAsync(request.UserId, request);
             return Results.Ok(ApiResponse<object>.Ok(result, "Chat response generated"));
         })
         .WithName("ChatWithAgent")
@@ -62,13 +57,5 @@ public static class HealthAgentEndpoints
         })
         .WithName("GetSuggestions")
         .WithOpenApi();
-    }
-
-    private static Guid? GetUserId(HttpContext httpContext)
-    {
-        var userIdClaim = httpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (Guid.TryParse(userIdClaim, out var userId))
-            return userId;
-        return null;
     }
 }
