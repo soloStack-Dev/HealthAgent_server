@@ -19,7 +19,12 @@ public class MediAgentKernel
     {
         try
         {
-            var groqApiKey = _configuration["Groq:ApiKey"] ?? "";
+            var groqApiKey = _configuration["Groq:ApiKey"] ?? Environment.GetEnvironmentVariable("GROQ_API_KEY");
+            if (string.IsNullOrWhiteSpace(groqApiKey))
+            {
+                throw new InvalidOperationException("Groq API key is not configured.");
+            }
+
             var groqModel = _configuration["Groq:Model"] ?? "llama-3.3-70b-versatile";
             var groqBaseUrl = _configuration["Groq:BaseUrl"] ?? "https://api.groq.com/openai/v1";
             var timeoutSeconds = int.Parse(_configuration["Groq:TimeoutSeconds"] ?? "120");
