@@ -19,7 +19,9 @@ public class MediAgentKernel
     {
         try
         {
-            var groqApiKey = _configuration["Groq:ApiKey"] ?? Environment.GetEnvironmentVariable("GROQ_API_KEY");
+            var groqApiKey = _configuration["Groq:ApiKey"];
+            if (string.IsNullOrWhiteSpace(groqApiKey))
+                groqApiKey = Environment.GetEnvironmentVariable("GROQ_API_KEY");
             if (string.IsNullOrWhiteSpace(groqApiKey))
             {
                 throw new InvalidOperationException("Groq API key is not configured.");
