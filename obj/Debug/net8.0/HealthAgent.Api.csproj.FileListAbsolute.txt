@@ -21,12 +21,10 @@ C:\drive\ecm\Health_recommendation\HealthAgent.Api\bin\Debug\net8.0\HealthAgent.
 C:\drive\ecm\Health_recommendation\HealthAgent.Api\bin\Debug\net8.0\HealthAgent.Api.pdb
 C:\drive\ecm\Health_recommendation\HealthAgent.Api\bin\Debug\net8.0\Azure.Core.dll
 C:\drive\ecm\Health_recommendation\HealthAgent.Api\bin\Debug\net8.0\Azure.Identity.dll
-C:\drive\ecm\Health_recommendation\HealthAgent.Api\bin\Debug\net8.0\BCrypt.Net-Next.dll
 C:\drive\ecm\Health_recommendation\HealthAgent.Api\bin\Debug\net8.0\Google.Protobuf.dll
 C:\drive\ecm\Health_recommendation\HealthAgent.Api\bin\Debug\net8.0\Humanizer.dll
 C:\drive\ecm\Health_recommendation\HealthAgent.Api\bin\Debug\net8.0\Microsoft.Agents.AI.dll
 C:\drive\ecm\Health_recommendation\HealthAgent.Api\bin\Debug\net8.0\Microsoft.Agents.AI.Abstractions.dll
-C:\drive\ecm\Health_recommendation\HealthAgent.Api\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 C:\drive\ecm\Health_recommendation\HealthAgent.Api\bin\Debug\net8.0\Microsoft.AspNetCore.OpenApi.dll
 C:\drive\ecm\Health_recommendation\HealthAgent.Api\bin\Debug\net8.0\Microsoft.Bcl.AsyncInterfaces.dll
 C:\drive\ecm\Health_recommendation\HealthAgent.Api\bin\Debug\net8.0\Microsoft.CodeAnalysis.dll

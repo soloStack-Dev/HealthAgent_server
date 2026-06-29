@@ -1,6 +1,5 @@
 using System.Text.Json;
-using Microsoft.Extensions.AI;
-using MediAgent.Api.Infrastructure.Ollama;
+using MediAgent.Api.Infrastructure.Ai;
 using MediAgent.Api.Models.Responses;
 
 namespace MediAgent.Api.Agents;
@@ -20,13 +19,14 @@ public class MediAgentKernel
     {
         try
         {
-            var ollamaEndpoint = _configuration["Ollama:Endpoint"] ?? "http://localhost:11434";
-            var modelId = _configuration["Ollama:Model"] ?? "phi3.5:latest";
-            var timeoutSeconds = int.Parse(_configuration["Ollama:TimeoutSeconds"] ?? "120");
-            var maxTokens = int.Parse(_configuration["Ollama:MaxTokens"] ?? "2048");
-            var temperature = float.Parse(_configuration["Ollama:Temperature"] ?? "0.3");
+            var groqApiKey = _configuration["Groq:ApiKey"] ?? "";
+            var groqModel = _configuration["Groq:Model"] ?? "llama-3.3-70b-versatile";
+            var groqBaseUrl = _configuration["Groq:BaseUrl"] ?? "https://api.groq.com/openai/v1";
+            var timeoutSeconds = int.Parse(_configuration["Groq:TimeoutSeconds"] ?? "120");
+            var maxTokens = int.Parse(_configuration["Groq:MaxTokens"] ?? "2048");
+            var temperature = float.Parse(_configuration["Groq:Temperature"] ?? "0.3");
 
-            var ollamaClient = new OllamaClient(ollamaEndpoint, modelId, timeoutSeconds);
+            using var groqClient = new GroqClient(groqApiKey, groqModel, groqBaseUrl, timeoutSeconds);
 
             var systemPrompt = @"You are MediAgent, an intelligent health symptom analyzer.
 You help users understand their symptoms by providing preliminary assessments,
@@ -60,20 +60,20 @@ Example output:
 
 IMPORTANT: If symptoms indicate EMERGENCY (chest pain, difficulty breathing, severe bleeding, loss of consciousness), immediately set urgencyLevel to 'Emergency' and advise calling emergency services.";
 
-            var response = await ollamaClient.ChatAsync(systemPrompt, userPrompt, maxTokens, temperature);
+            var response = await groqClient.ChatAsync(systemPrompt, userPrompt, maxTokens, temperature);
 
-            _logger.LogInformation("Ollama response received for symptom analysis");
+            _logger.LogInformation("Groq response received for symptom analysis");
 
             return new AgentResponse
             {
                 Content = response,
-                ModelUsed = modelId,
+                ModelUsed = groqModel,
                 ProcessedAt = DateTime.UtcNow
             };
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to analyze symptoms with Ollama");
+            _logger.LogError(ex, "Failed to analyze symptoms with Groq");
 
             var fallbackContent = JsonSerializer.Serialize(new
             {
