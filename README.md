@@ -10,15 +10,14 @@
   <p align="center">
     <strong>AI-Powered Health Symptom Analysis Engine</strong>
     <br/>
-    Intelligent health recommendations powered by SLM (Phi-3.5) with medical-grade safety guardrails
+    Intelligent health recommendations powered by Groq (llama-3.3-70b) with medical-grade safety guardrails
   </p>
 
   <p align="center">
     <img src="https://img.shields.io/badge/.NET-8.0-512BD4?style=flat-square&logo=dotnet&logoColor=white" alt=".NET 8.0"/>
-    <img src="https://img.shields.io/badge/Ollama-phi3.5-00FF00?style=flat-square&logo=ollama&logoColor=white" alt="Ollama"/>
-    <img src="https://img.shields.io/badge/SQL_Server-EF_Core-CC2927?style=flat-square&logo=microsoftsqlserver&logoColor=white" alt="SQL Server"/>
+    <img src="https://img.shields.io/badge/Groq-llama_3.3_70b-38A169?style=flat-square&logo=groq&logoColor=white" alt="Groq"/>
+    <img src="https://img.shields.io/badge/SQLite-EF_Core-003B57?style=flat-square&logo=sqlite&logoColor=white" alt="SQLite"/>
     <img src="https://img.shields.io/badge/Swagger-UI-85EA2D?style=flat-square&logo=swagger&logoColor=black" alt="Swagger"/>
-    <img src="https://img.shields.io/badge/JWT-Bearer-000000?style=flat-square&logo=jsonwebtokens&logoColor=white" alt="JWT"/>
   </p>
 
   <br/>
@@ -28,13 +27,13 @@
 
 ## Overview
 
-**HealthAgent API** is the backend engine for the HealthRec platform. It uses Microsoft **Phi-3.5** (a small language model running locally via Ollama) to analyze user-described symptoms, identify possible conditions, recommend actions, and surface trusted medical resources — all within strict safety guardrails.
+**HealthAgent API** is the backend engine for the HealthRec platform. It uses **Groq** (llama-3.3-70b-versatile) to analyze user-described symptoms, identify possible conditions, recommend actions, and surface trusted medical resources — all within strict safety guardrails.
 
 ```
-┌──────────────┐     ┌──────────────┐     ┌──────────────┐     ┌──────────────┐
-│  React UI    │ ──▶ │  .NET 8 API  │ ──▶ │  Ollama/SLM  │ ──▶ │  Phi-3.5     │
-│  (Client)    │ ◀── │  (Server)    │ ◀── │  (Local AI)  │     │  Model       │
-└──────────────┘     └──────────────┘     └──────────────┘     └──────────────┘
+┌──────────────┐     ┌──────────────┐     ┌──────────────────┐
+│  React UI    │ ──▶ │  .NET 8 API  │ ──▶ │  Groq API        │
+│  (Client)    │ ◀── │  (Server)    │ ◀── │  (Cloud LLM)     │
+└──────────────┘     └──────────────┘     └──────────────────┘
 ```
 
 ---
@@ -44,7 +43,7 @@
 ```
 HealthAgent.Api/
 ├── Agents/                  # AI orchestration layer
-│   ├── MediAgentKernel.cs   # Core agent: builds prompts, calls Ollama, parses output
+│   ├── MediAgentKernel.cs   # Core agent: builds prompts, calls Groq, parses output
 │   ├── Plugins/             # AI plugins (safety, symptom analysis, web search)
 │   ├── Prompts/             # 15 specialized prompt templates
 │   └── Skills/              # Skill definitions (MD files used in system prompts)
@@ -52,23 +51,16 @@ HealthAgent.Api/
 ├── Data/                    # EF Core DbContext + configurations
 ├── Endpoints/               # Minimal API endpoint definitions
 ├── Entities/                # Domain models (User, Conversation, Message, MedicalResource)
-├── Infrastructure/          # Ollama HTTP client, web search service
+├── Infrastructure/          # Groq/OpenAI-compatible HTTP client, web search service
 ├── Middleware/               # Exception handling + request logging
 ├── Models/                  # Request/Response DTOs
-├── Services/                # Business logic (auth, conversations, health agent)
+├── Services/                # Business logic (conversations, health agent)
 └── Common/                  # Shared utilities (ApiResponse, Result<T>, Constants)
 ```
 
 ---
 
 ## API Endpoints
-
-### Authentication (`/api/auth`)
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `POST` | `/api/auth/register` | Create a new account |
-| `POST` | `/api/auth/login` | Sign in with email/password |
-| `POST` | `/api/auth/refresh` | Refresh JWT token |
 
 ### Health Agent (`/api/health`)
 | Method | Endpoint | Description |
@@ -98,10 +90,9 @@ HealthAgent.Api/
 | Layer | Technology |
 |-------|-----------|
 | **Runtime** | .NET 8.0 (ASP.NET Core Minimal API) |
-| **Database** | SQL Server via Entity Framework Core 8 |
-| **Authentication** | JWT Bearer tokens (15-min expiry, refresh support) |
-| **Password Hashing** | BCrypt.Net-Next (work factor 12) |
-| **AI Model** | Phi-3.5 (Microsoft SLM) via Ollama |
+| **Database** | SQLite / SQL Server via Entity Framework Core 8 |
+| **Authentication** | Clerk (frontend-managed, no backend tokens) |
+| **AI Model** | llama-3.3-70b-versatile via Groq API |
 | **API Docs** | Swagger / Swashbuckle |
 | **CORS** | Configured for frontend dev servers |
 
@@ -112,12 +103,7 @@ HealthAgent.Api/
 ### Prerequisites
 
 - [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
-- [Ollama](https://ollama.ai/) installed and running
-- Phi-3.5 model pulled:
-  ```bash
-  ollama pull phi3.5
-  ```
-- SQL Server (LocalDB or full instance)
+- [Groq API key](https://console.groq.com) (free tier available)
 
 ### Configuration
 
@@ -125,32 +111,32 @@ HealthAgent.Api/
    ```json
    {
      "ConnectionStrings": {
-       "DefaultConnection": "Server=(localdb)\\MSSQLLocalDB;Database=HealthAgentDb;Trusted_Connection=True;"
+       "SqliteConnection": "Data Source=HealthAgent.db"
      },
-     "Ollama": {
-       "Endpoint": "http://localhost:11434",
-       "Model": "phi3.5:latest",
+     "DatabaseProvider": "Sqlite",
+     "Groq": {
+       "ApiKey": "",
+       "Model": "llama-3.3-70b-versatile",
+       "BaseUrl": "https://api.groq.com/openai/v1",
        "TimeoutSeconds": 120,
        "MaxTokens": 2048,
        "Temperature": 0.3
-     },
-     "Jwt": {
-       "Secret": "your-secret-key-min-32-chars",
-       "Issuer": "HealthAgentApi",
-       "Audience": "HealthAgentClient",
-       "ExpiryMinutes": 15
      }
    }
+   ```
+
+2. Set your Groq API key via environment variable:
+   ```bash
+   set GROQ_API_KEY=gsk_your_key_here
    ```
 
 ### Run
 
 ```bash
-# Apply migrations & start
 dotnet run
 
-# The API starts at https://localhost:5001
-# Swagger UI: https://localhost:5001/swagger
+# The API starts at http://localhost:5115
+# Swagger UI: http://localhost:5115/swagger
 ```
 
 ---
@@ -168,12 +154,13 @@ A production-ready `Dockerfile` is located at `HealthAgent.Api/Dockerfile`. It u
 docker build -t health-agent-api -f HealthAgent.Api/Dockerfile .
 
 docker run -d -p 8080:8080 \
-  -e ConnectionStrings__DefaultConnection="Server=host.docker.internal,1433;Database=HealthAgentDb;User=sa;Password=YourPassword;TrustServerCertificate=True" \
-  -e Ollama__Endpoint="http://host.docker.internal:11434" \
+  -e DatabaseProvider=Sqlite \
+  -e ConnectionStrings__SqliteConnection="Data Source=HealthAgent.db" \
+  -e GROQ_API_KEY=gsk_your_key_here \
   health-agent-api
 ```
 
-> **Note:** Point `Ollama__Endpoint` to a host-accessible Ollama instance (e.g. `host.docker.internal` on Docker Desktop or the Ollama container's network alias). Configure the database connection string to reach your SQL Server instance.
+> **Note:** The Dockerfile sets `DatabaseProvider=Sqlite` and `ConnectionStrings__SqliteConnection` by default. Set `GROQ_API_KEY` to your Groq API key.
 
 ---
 
